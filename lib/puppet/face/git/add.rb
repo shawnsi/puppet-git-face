@@ -19,7 +19,9 @@ Puppet::Face.define(:git, '0.0.1') do
     when_invoked do |giturl, options|
       config(options)
       digest = Digest::MD5.hexdigest(giturl)
-      `git clone #{giturl} #{@gitcache}/#{digest}`
+      gitlocal = "#{@gitcache}/#{digest}"
+      `git clone #{giturl} #{gitlocal}`
+      `echo #{giturl} > #{gitlocal}/.giturl`
       return
     end
   end
