@@ -24,8 +24,10 @@ Puppet::Face.define(:git, '0.0.1') do
       @apply = Puppet::Application::Apply.new
       @apply.command_line.args.clear
       @apply.command_line.args << "#{@gitcache}/#{@gitmanifest}"
-      puts @apply.command_line.inspect
-      @apply.main
+      begin
+        @apply.main
+      rescue SystemExit
+      end
     end
   end
 end
