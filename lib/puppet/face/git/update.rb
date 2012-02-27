@@ -15,7 +15,7 @@ Puppet::Face.define(:git, '0.0.1') do
     
     when_invoked do |options|
       config(options)
-      `cd #{@gitcache} && git checkout #{@gitbranch} && git pull origin #{@gitbranch}`
+      `cd #{@gitcache} && git fetch origin && git checkout origin/#{@gitbranch}`
       return
     end
   end
