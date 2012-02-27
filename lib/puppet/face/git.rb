@@ -10,12 +10,6 @@ Puppet::Face.define(:git, '0.0.1') do
   license "Apache 2"
   #author "Shawn Siefkas <shawn@siefk.as>"
 
-  option "--giturl GITURL" do
-    summary "git repository url"
-    description <<-'EOT'
-      The git repository url to use as the manifest source.
-    EOT
-  end
   option "--gitbranch GITBRANCH" do
     summary "git branch to apply"
     description <<-'EOT'
@@ -42,7 +36,6 @@ Puppet::Face.define(:git, '0.0.1') do
   end
 
   def config(options)
-    @giturl        = options[:giturl]        || '/home/shawn/test'
     @gitbranch     = options[:gitbranch]     || 'master'
     @gitcache      = options[:gitcache]      || '/home/shawn/.puppet/git'
     @gitmanifest   = options[:gitmanifest]   || 'init.pp'
