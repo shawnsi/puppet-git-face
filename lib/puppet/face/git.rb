@@ -37,7 +37,7 @@ Puppet::Face.define(:git, '0.0.1') do
 
   def config(options)
     @gitbranch     = options[:gitbranch]     || 'master'
-    @gitcache      = options[:gitcache]      || '/home/shawn/.puppet/git'
+    @gitcache      = options[:gitcache]      || "#{Etc.getpwuid.dir}/.puppet/git"
     @gitmanifest   = options[:gitmanifest]   || 'init.pp'
     @gitmodulepath = options[:gitmodulepath] || 'modules'
   end
