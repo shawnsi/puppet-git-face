@@ -15,19 +15,26 @@ Puppet::Face.define(:git, '0.0.1') do
 
     when_invoked do |options|
       config(options)
-      if File.directory?("#{@gitcache}/.git")
-        self.update
-      else
-        self.clone
-      end
+      update
 
-      @apply = Puppet::Application::Apply.new
-      @apply.command_line.args.clear
-      @apply.command_line.args << "#{@gitcache}/#{@gitmanifest}"
-      begin
-        @apply.main
-      rescue SystemExit
-      end
+      Dir.foreach(@gitcache) { |d|
+        unless ['..', '.'].index(d)
+          def get_metadata(key)
+            File.open("#{key}", 'r') {|f| return f.readline.strip}
+          end
+          
+          metadata_path = "#{@gitcache}/#{d}/.puppet-git"
+          gitmanifest = get_metadata("#{metadata_path}/manifest")
+
+          @apply = Puppet::Application::Apply.new
+          @apply.command_line.args.clear
+          @apply.command_line.args << "#{@gitcache}/#{d}/#{gitmanifest}"
+          begin
+            @apply.main
+          rescue SystemExit
+          end
+        end
+      }
     end
   end
 end

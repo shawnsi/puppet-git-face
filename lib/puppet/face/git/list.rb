@@ -13,9 +13,24 @@ Puppet::Face.define(:git, '0.0.1') do
       $ puppet git list
     EOT
 
+
     when_invoked do |options|
       config(options)
-      `for repo in #{@gitcache}/*; do echo -n \`basename $repo\`:; cat $repo/.giturl; done`
+      Dir.foreach(@gitcache) { |d|
+        unless ['..', '.'].index(d)
+          metadata_path = "#{@gitcache}/#{d}/.puppet-git"
+         
+          def get_metadata(key)
+            File.open("#{key}", 'r') {|f| return f.readline}
+          end
+          
+          puts get_metadata("#{metadata_path}/url")
+
+          puts "\tmd5sum: " << d
+          puts "\tmanifest: " << get_metadata("#{metadata_path}/manifest")
+          puts "\tmodulepath: " << get_metadata("#{metadata_path}/modulepath")
+        end
+      }
     end
   end
 end

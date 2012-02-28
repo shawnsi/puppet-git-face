@@ -1,4 +1,5 @@
 require 'digest/md5'
+require 'git'
 
 Puppet::Face.define(:git, '0.0.1') do
   action :add do
@@ -19,9 +20,22 @@ Puppet::Face.define(:git, '0.0.1') do
     when_invoked do |giturl, options|
       config(options)
       digest = Digest::MD5.hexdigest(giturl)
-      gitlocal = "#{@gitcache}/#{digest}"
-      `git clone #{giturl} #{gitlocal}`
-      `echo #{giturl} > #{gitlocal}/.giturl`
+      path = "#{@gitcache}/#{digest.to_s}"
+      metadata_path = "#{path}/.puppet-git"
+      g = Git.clone(giturl, path)
+
+      # Create the .puppet-git directory to store info for this face
+      FileUtils::mkdir(metadata_path)
+    
+      def add_metadata(key, value)
+        f = File.new("#{key}", 'w+')
+        f.puts value
+        f.close
+      end
+
+      add_metadata("#{metadata_path}/url", giturl)
+      add_metadata("#{metadata_path}/modulepath", @gitmodulepath)
+      add_metadata("#{metadata_path}/manifest", @gitmanifest)
       return
     end
   end

@@ -1,3 +1,5 @@
+require 'git'
+
 Puppet::Face.define(:git, '0.0.1') do
   action :update do
     summary "Update local git cache"
@@ -15,7 +17,13 @@ Puppet::Face.define(:git, '0.0.1') do
     
     when_invoked do |options|
       config(options)
-      `cd #{@gitcache} && git fetch origin && git checkout origin/#{@gitbranch}`
+      Dir.foreach(@gitcache) { |d|
+        unless ['..', '.'].index(d)
+          g = Git.open("#{@gitcache}/#{d}")
+          g.fetch()
+          g.checkout("origin/#{@gitbranch}")
+        end
+      }
       return
     end
   end
