@@ -9,7 +9,11 @@ A Puppet Face for pulling manifests from a git repo and running locally.
 Requirements
 ------------
 
-* `puppet` ~> 2.7.0`
+* `puppet` ~> 2.7.0
+
+### Rubygems ###
+
+* `git`
 
 Installation
 ------------
@@ -19,10 +23,18 @@ Install puppet-git-face as a module in your Puppet master's module path.
 Usage
 -----
 
+puppet help git
+
+Notes
+-----
+
+There is currently no way to edit repository settings after adding.  To change the root manifest, modulepath, etc. just edit the appropriate file in $GITCACHE/repo/.puppet-git.
+
 Author
 ------
 
-Shawn Siefkas <shawn@siefk.as>
+Shawn Siefkas 
+<shawn@siefk.as>
 
 License
 -------
